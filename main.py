@@ -17,12 +17,14 @@ def raster_to_x(x1, y1, x2, m):
 
     b = y - m * x
 
+    step = 1 if x2 > x1 else -1
+
     pixel_x, pixel_y = produce_fragment(x, y)
     x_axis.append(pixel_x)
     y_axis.append(pixel_y)
 
-    while x < x2:
-        x += 1
+    while x != x2:
+        x += step
         y = m * x + b
         pixel_x, pixel_y = produce_fragment(x, y)
         x_axis.append(pixel_x)
@@ -39,13 +41,15 @@ def raster_to_y(x1, y1, y2, m):
 
     b = y - m * x
 
+    step = 1 if y2 > y1 else -1
+
     pixel_x, pixel_y = produce_fragment(x, y)
     x_axis.append(pixel_x)
     y_axis.append(pixel_y)
 
-    while y < y2:
-        y += 1
-        x = (y - b) / m
+    while y != y2:
+        y += step
+        x = x if m == 0 else (y - b) / m
         pixel_x, pixel_y = produce_fragment(x, y)
         x_axis.append(pixel_x)
         y_axis.append(pixel_y)
@@ -53,11 +57,14 @@ def raster_to_y(x1, y1, y2, m):
 
 
 def raster_rect(x1, y1, x2, y2, size_x, size_y):
+    size_x -= 1
+    size_y -= 1
+
     delta_x = abs(x2 - x1)
     delta_y = abs(y2 - y1)
 
-    x_scale = size_x / delta_x
-    y_scale = size_y / delta_y
+    x_scale = 1 if delta_x == 0 else size_x / delta_x
+    y_scale = 1 if delta_y == 0 else size_y / delta_y
 
     x1 *= x_scale
     x2 *= x_scale
@@ -68,7 +75,7 @@ def raster_rect(x1, y1, x2, y2, size_x, size_y):
     delta_x = abs(x2 - x1)
     delta_y = abs(y2 - y1)
 
-    m = delta_y / delta_x
+    m = 0 if delta_x == 0 else delta_y / delta_x
 
     return raster_to_x(x1, y1, x2, m) if delta_x >= delta_y else raster_to_y(x1, y1, y2, m)
 
@@ -86,7 +93,7 @@ def plot_chart(x_axis, y_axis):
 
 if __name__ == '__main__':
     x_size = 5
-    y_size = 9
-    axis = raster_rect(5, 0, 10, 20, x_size, y_size)
+    y_size = 5
+    axis = raster_rect(0, 0, 10, 20, x_size, y_size)
     plot_chart(axis['x'], axis['y'])
     print(axis)
