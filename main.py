@@ -4,12 +4,31 @@ import math
 
 
 def produce_fragment(x, y):
+    """
+    Função responsável por converter uma coordenada em uma amostra discreta.
+
+    :param x: x do vértice
+    :param y: y do vértice
+    :return: ccoordenada do fragmento em forma de tupla
+    """
     x = abs(x)
     y = abs(y)
     return math.floor(x), math.floor(y)
 
 
 def raster_to_x(x1, y1, x2, y2, m):
+    """
+    Função responsável por rasterizar uma reta a partir de seus vértices, quando
+    a variação em x é maior do que em y.
+
+    :param x1: x do vértice 1
+    :param y1: y do vértice 1
+    :param x2: x do vértice 2
+    :param y2: y do vértice 2
+    :param m: Coeficiente angular da reta
+    :return: Objeto contendo as listas de valores de x e y das amostras discretas e uma
+            matriz com os pixels mapeados.
+    """
     x_axis = []
     y_axis = []
 
@@ -39,6 +58,18 @@ def raster_to_x(x1, y1, x2, y2, m):
 
 
 def raster_to_y(x1, y1, x2, y2, m):
+    """
+    Função responsável por rasterizar uma reta a partir de seus vértices, quando
+    a variação em x é maior do que em y.
+
+    :param x1: x do vértice 1
+    :param y1: y do vértice 1
+    :param x2: x do vértice 2
+    :param y2: y do vértice 2
+    :param m: Coeficiente angular da reta
+    :return: Objeto contendo as listas de valores de x e y das amostras discretas e uma
+            matriz com os pixels mapeados.
+    """
     x_axis = []
     y_axis = []
 
@@ -67,15 +98,28 @@ def raster_to_y(x1, y1, x2, y2, m):
     return {'x': x_axis, 'y': y_axis, 'm': mat}
 
 
-def raster_rect(x1, y1, x2, y2, size_x, size_y):
+def raster_rect(x1: float, y1: float, x2: float, y2: float, size_x: int, size_y: int):
+    """
+    Função responsável por receber dois vértices de uma reta e escolher a melhor
+    estratégia para rasterizá-la.
+
+    :param x1: x do vértice 1
+    :param y1: y do vértice 1
+    :param x2: x do vértice 2
+    :param y2: y do vértice 2
+    :param size_x: Quantidade de pixels no eixo x
+    :param size_y: Quantidade de pixels no eixo y
+    :return: Objeto contendo as listas de valores de x e y das amostras discretas e uma
+            matriz com os pixels mapeados.
+    """
     size_x -= 1
     size_y -= 1
 
-    delta_x = abs(x2 - x1)
-    delta_y = abs(y2 - y1)
+    delta_x: float = abs(x2 - x1)
+    delta_y: float = abs(y2 - y1)
 
-    x_scale = 1 if delta_x == 0 else size_x / delta_x
-    y_scale = 1 if delta_y == 0 else size_y / delta_y
+    x_scale: int = 1 if delta_x == 0 else size_x / delta_x
+    y_scale: int = 1 if delta_y == 0 else size_y / delta_y
 
     x1 *= x_scale
     x2 *= x_scale
@@ -86,12 +130,20 @@ def raster_rect(x1, y1, x2, y2, size_x, size_y):
     delta_x = abs(x2 - x1)
     delta_y = abs(y2 - y1)
 
-    m = 0 if delta_x == 0 else delta_y / delta_x
+    m: float = 0 if delta_x == 0 else delta_y / delta_x
 
     return raster_to_x(x1, y1, x2, y2, m) if delta_x >= delta_y else raster_to_y(x1, y1, x2, y2, m)
 
 
 def plot_chart(x_axis, y_axis, mat):
+    """
+    Função responsável por gerar uma imagem de uma reta rasterizada a partir dos dados
+    obtidos no algoritmo de rasterização.
+    :param x_axis: Lista de valores de x das amostras discretas
+    :param y_axis: Lista de valores de x das amostras discretas
+    :param mat: Matriz de pixels da reta discretizada
+    :return:
+    """
     height = range(math.floor(min(y_axis[-1], y_axis[0])), math.ceil(max(y_axis[-1], y_axis[0])) + 1)
     width = range(math.floor(min(x_axis[-1], x_axis[0])), math.ceil(max(x_axis[-1], x_axis[0])) + 1)
 
